@@ -1,0 +1,183 @@
+<template>
+  <div>
+    <Head :title="$page.props.language.car_update" />
+
+
+
+    <page-header>
+      <div class="flex justify-between">
+        <div>
+          {{ $page.props.language.car_update }}
+        </div>
+        <div>
+          <BackButton/>
+        </div>
+      </div>
+    </page-header>
+
+    <div class="grid gap-4 lg:gap-7 md:grid-cols-2 m-4 lg:m-7">
+      <!-- Create new shipment -->
+      <div class="border rounded border-gray-200 p-3 sm:p-5 bg-white">
+        <h2 class="text-gray-700 text-lg mb-4 font-semibold">
+          {{ $page.props.language.car_update }}
+        </h2>
+
+        <flash-messages />
+
+        <form @submit.prevent="submit" class="mt-4">
+          <input type="hidden" v-model="form.group" />
+
+          <Label :value="$page.props.language.group" />
+          <SelectInput
+            v-model="form.group"
+            :error="form.errors.group"
+            class="mt-4 block w-full"
+            :selectPlaceholder="$page.props.language.select_the_group"
+            :readonly="true"
+          >
+            <option v-for="group in groups" :key="group.id" :value="group.id">
+              {{ group.name }}
+            </option>
+          </SelectInput>
+
+          <Label :value="$page.props.language.the_name" class="mt-4" />
+          <Input
+            id="name"
+            type="text"
+            v-model="form.name"
+            :error="form.errors.name"
+            class="block w-full"
+            required
+            :placeholder="$page.props.language.the_name"
+          />
+          <InputError :message="form.errors.name" />
+
+          <Label :value="$page.props.language.the_brand" class="mt-4" />
+          <Input
+            id="mark"
+            type="text"
+            v-model="form.mark"
+            :error="form.errors.mark"
+            class="block w-full"
+            :placeholder="$page.props.language.the_brand"
+            autocomplete="name"
+          />
+          <InputError :message="form.errors.mark" />
+
+          <Label :value="$page.props.language.car_number" class="mt-4" />
+          <Input
+            id="plateNumber"
+            type="text"
+            v-model="form.plateNumber"
+            :error="form.errors.plateNumber"
+            class="block w-full"
+            required
+            :placeholder="$page.props.language.car_number"
+          />
+          <InputError :message="form.errors.plateNumber" />
+
+          <Label :value="$page.props.language.car_number_on_th_back" class="mt-4" />
+          <Input
+            id="backPlateNumber"
+            type="text"
+            v-model="form.backPlateNumber"
+            :error="form.errors.backPlateNumber"
+            class="block w-full"
+            required
+            placeholder="car_number_on_th_back"
+          />
+          <InputError :message="form.errors.backPlateNumber" />
+
+          <Label :value="$page.props.language.account_type" class="mt-4" />
+          <SelectInput
+            v-model="form.user_type"
+            :error="form.errors.user_type"
+            class="mt-4 block w-full"
+            :selectPlaceholder="$page.props.language.choose_the_account_type"
+            :readonly="true"
+          >
+            <option value="employee">{{ $page.props.language.employee }}</option>
+            <option value="operator">{{ $page.props.language.the_delegate }}</option>
+          </SelectInput>
+
+          <Label :value="$page.props.language.phone_number" class="mt-4" />
+          <Input
+            id="phone"
+            type="text"
+            v-model="form.phone"
+            :error="form.errors.phone"
+            class="block w-full"
+            required
+            :placeholder="$page.props.language.the_employee_delegates_user_phone_number"
+          />
+          <InputError :message="form.errors.phone" />
+
+          <Button
+            :class="{ 'opacity-25': form.processing }"
+            :disabled="form.processing"
+            class="mt-4 px-6"
+          >
+            {{ $page.props.language.save }}
+          </Button>
+        </form>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import BreezeAuthenticatedLayout from "@/Layouts/Authenticated.vue";
+import BreezeValidationErrors from "@/Components/ValidationErrors.vue";
+import PageHeader from "@/Components/PageHeader.vue";
+import Checkbox from "@/Components/Checkbox.vue";
+import Button from "@/Components/Button.vue";
+import { Head } from "@inertiajs/vue3";
+import Input from "@/Components/Input.vue";
+import FlashMessages from "@/Components/FlashMessages.vue";
+import SelectInput from "@/Components/SelectInput.vue";
+import InputError from "@/Components/InputError.vue";
+import Label from "@/Components/Label.vue";
+import BackButton from "../../Components/backButton.vue"
+export default {
+  components: {
+    Head,
+    PageHeader,
+    Button,
+    Input,
+    Checkbox,
+    BreezeValidationErrors,
+    FlashMessages,
+    SelectInput,
+    InputError,
+    Label,
+    BackButton
+  },
+  layout: BreezeAuthenticatedLayout,
+
+  props: ["vehicle", "groups", "user"],
+  language: Object,
+  data() {
+    return {
+      form: this.$inertia.form({
+        name: this.vehicle.name,
+        mark: this.vehicle.mark,
+        plateNumber: this.vehicle.plate_number,
+        backPlateNumber: this.vehicle.back_plate_number,
+        group: this.vehicle.vehicle_group_id,
+        user_type: this.user.type,
+        phone: this.user.phone,
+      }),
+    };
+  },
+
+  methods: {
+    submit() {
+      this.form.put(this.route("vehicles.update", this.vehicle), {
+        preserveScroll: true,
+        onSuccess: () => this.form.reset(""),
+        onFinish: () => this.form.reset(),
+      });
+    },
+  },
+};
+</script>

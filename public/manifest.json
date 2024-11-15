@@ -1,0 +1,17 @@
+{
+    "name": "Alnaqil Almahalli",
+    "short_name": "Alnaqil",
+    "start_url": "/index.php",
+    "background_color": "#F6F5F5",
+    "description": "",
+    "display": "standalone",
+    "theme_color": "#676CE6",
+    "icons": [
+        {
+            "src": "https://alnaqil.sa/images/logo1.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}
